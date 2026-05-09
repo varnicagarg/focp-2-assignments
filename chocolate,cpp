@@ -1,0 +1,56 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <map>
+
+using namespace std;
+
+string solve() {
+    int N;
+    if (!(cin >> N)) return "";
+    
+    map<int, int> counts;
+    for (int i = 0; i < N; ++i) {
+        int val;
+        cin >> val;
+        counts[val]++;
+    }
+
+    vector<int> playable_piles;
+    // For each unique quantity, Alex can eat one and Bob can eat one.
+    // Any extra piles of the same quantity are left untouched.
+    for (auto const& [val, freq] : counts) {
+        playable_piles.push_back(val); // First pile for whoever's turn it is
+        if (freq >= 2) {
+            playable_piles.push_back(val); // Second pile for the other player
+        }
+    }
+
+    // Sort descending so they always pick the largest available
+    sort(playable_piles.rbegin(), playable_piles.rend());
+
+    long long alex_total = 0;
+    long long bob_total = 0;
+
+    for (int i = 0; i < playable_piles.size(); ++i) {
+        if (i % 2 == 0) {
+            alex_total += playable_piles[i];
+        } else {
+            bob_total += playable_piles[i];
+        }
+    }
+
+    return (alex_total > bob_total) ? "Alex" : "Bob";
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int T;
+    if (!(cin >> T)) return 0;
+    while (T--) {
+        cout << solve() << endl;
+    }
+    return 0;
+}
